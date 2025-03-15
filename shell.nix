@@ -3,8 +3,14 @@
 }:
 with pkgs;
 mkShell {
+  RUST_SRC_PATH = "${rust.packages.stable.rustPlatform.rustLibSrc}";
+
   buildInputs = [
     openssl
+    rustup
+    rustc
+    rustfmt
+    cargo
   ];
 
   nativeBuildInputs = [
@@ -14,10 +20,7 @@ mkShell {
   shellHook = '''';
 
   packages = [
-    nodejs
-    rustup
-    rustc
     cargo
-    openssl
+    nodejs
   ];
 }

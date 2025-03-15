@@ -1,4 +1,4 @@
-name = "secrets"
+name = "secrets_api"
 main = "build/worker/shim.mjs"
 compatibility_date = "2025-03-10"
 
