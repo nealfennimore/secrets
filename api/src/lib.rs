@@ -36,6 +36,7 @@ pub async fn main(req: Request, env: Env, _ctx: worker::Context) -> Result<Respo
                 .bytes()
                 .await?
                 .expect("No secret found");
+            kv.delete(&payload.id.to_string()).await?;
             let secret: Secret = serde_json::from_slice(&bytes)?;
             Response::from_json(&secret)
         })
