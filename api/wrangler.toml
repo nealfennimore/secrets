@@ -1,6 +1,10 @@
 name = "secrets_api"
 main = "build/worker/shim.mjs"
 compatibility_date = "2025-03-10"
+routes = [{ pattern = "secrets.api.neal.codes", custom_domain = true }]
+kv_namespaces = [
+    { binding = "secrets", id = "0c1410d005b94f4c80462eb1c5640338" },
+]
 
 [build]
 command = "cargo install -q worker-build && worker-build --release"

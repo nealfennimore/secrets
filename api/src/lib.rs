@@ -16,7 +16,7 @@ struct SecretId {
     id: String,
 }
 
-const KV_NAMESPACE: &str = "SECRETS";
+const KV_NAMESPACE: &str = "secrets";
 
 #[event(fetch, respond_with_errors)]
 pub async fn main(req: Request, env: Env, _ctx: worker::Context) -> Result<Response> {
@@ -37,7 +37,10 @@ pub async fn main(req: Request, env: Env, _ctx: worker::Context) -> Result<Respo
             let id: String = Uuid::new_v4().urn().to_string();
             let payload = req.json::<Secret>().await?;
             let bytes = serde_json::to_vec(&payload)?;
-            kv.put_bytes(&id, &bytes)?.execute().await?;
+            kv.put_bytes(&id, &bytes)?
+                .expiration_ttl(60 * 60 * 24)
+                .execute()
+                .await?;
             Response::from_json(&SecretId { id })
         })
         .run(req, env)
