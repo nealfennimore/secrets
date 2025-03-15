@@ -5,7 +5,7 @@ use uuid::Uuid;
 use worker::*;
 
 #[derive(Deserialize, Serialize, Validate)]
-struct Secret {
+pub struct Secret {
     #[serde(with = "serde_bytes")]
     salt: [u8; 32],
     #[serde(with = "serde_bytes")]
@@ -15,8 +15,8 @@ struct Secret {
 }
 
 #[derive(Deserialize, Serialize)]
-struct SecretId {
-    id: String,
+pub struct SecretId {
+    id: Uuid,
 }
 
 const KV_NAMESPACE: &str = "secrets";
@@ -31,16 +31,21 @@ pub async fn main(req: Request, env: Env, _ctx: worker::Context) -> Result<Respo
         .post_async("/retrieve", |mut req, ctx| async move {
             let kv = ctx.kv(&KV_NAMESPACE)?;
             let payload = req.json::<SecretId>().await?;
-            let bytes = kv.get(&payload.id).bytes().await?.expect("No secret found");
+            let bytes = kv
+                .get(&payload.id.to_string())
+                .bytes()
+                .await?
+                .expect("No secret found");
             let secret: Secret = serde_json::from_slice(&bytes)?;
             Response::from_json(&secret)
         })
         .post_async("/store", |mut req, ctx| async move {
             let kv = ctx.kv(&KV_NAMESPACE)?;
-            let id: String = Uuid::new_v4().to_string();
+            let id = Uuid::new_v4();
             let payload = req.json::<Secret>().await?;
+            payload.validate().map_err(|e| Error::from(e.to_string()))?;
             let bytes = serde_json::to_vec(&payload)?;
-            kv.put_bytes(&id, &bytes)?
+            kv.put_bytes(&id.to_string(), &bytes)?
                 .expiration_ttl(60 * 60 * 24)
                 .execute()
                 .await?;
