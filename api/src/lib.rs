@@ -29,8 +29,12 @@ pub async fn main(req: Request, env: Env, _ctx: worker::Context) -> Result<Respo
 
     router
         .post_async("/retrieve", |mut req, ctx| async move {
+            let payload = match req.json::<SecretId>().await {
+                Ok(p) => p,
+                Err(e) => return Response::error(e.to_string(), 400),
+            };
+
             let kv = ctx.kv(&KV_NAMESPACE)?;
-            let payload = req.json::<SecretId>().await?;
             let bytes = kv.get(&payload.id.to_string()).bytes().await?;
             if bytes.is_none() {
                 return Response::error("Secret not found", 404);
@@ -40,10 +44,14 @@ pub async fn main(req: Request, env: Env, _ctx: worker::Context) -> Result<Respo
             Response::from_json(&secret)
         })
         .post_async("/store", |mut req, ctx| async move {
+            let payload = req.json::<Secret>().await?;
+            let validation = payload.validate().map_err(|e| e.to_string());
+            if validation.is_err() {
+                return Response::error(validation.err().unwrap(), 400);
+            }
+
             let kv = ctx.kv(&KV_NAMESPACE)?;
             let id = Uuid::new_v4();
-            let payload = req.json::<Secret>().await?;
-            payload.validate().map_err(|e| Error::from(e.to_string()))?;
             let bytes = serde_json::to_vec(&payload)?;
             kv.put_bytes(&id.to_string(), &bytes)?
                 .expiration_ttl(60 * 60 * 24)
