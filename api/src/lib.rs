@@ -44,7 +44,10 @@ pub async fn main(req: Request, env: Env, _ctx: worker::Context) -> Result<Respo
             Response::from_json(&secret)
         })
         .post_async("/store", |mut req, ctx| async move {
-            let payload = req.json::<Secret>().await?;
+            let payload = match req.json::<Secret>().await {
+                Ok(p) => p,
+                Err(e) => return Response::error(e.to_string(), 400),
+            };
             let validation = payload.validate().map_err(|e| e.to_string());
             if validation.is_err() {
                 return Response::error(validation.err().unwrap(), 400);
