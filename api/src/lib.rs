@@ -1,13 +1,16 @@
 use serde::{Deserialize, Serialize};
 use serde_json;
+use serde_valid::Validate;
 use uuid::Uuid;
 use worker::*;
 
-#[derive(Deserialize, Serialize)]
+#[derive(Deserialize, Serialize, Validate)]
 struct Secret {
     #[serde(with = "serde_bytes")]
     salt: [u8; 32],
     #[serde(with = "serde_bytes")]
+    #[validate(min_items = 1)]
+    #[validate(max_items = 32768)]
     ciphertext: Vec<u8>,
 }
 
@@ -34,7 +37,7 @@ pub async fn main(req: Request, env: Env, _ctx: worker::Context) -> Result<Respo
         })
         .post_async("/store", |mut req, ctx| async move {
             let kv = ctx.kv(&KV_NAMESPACE)?;
-            let id: String = Uuid::new_v4().urn().to_string();
+            let id: String = Uuid::new_v4().to_string();
             let payload = req.json::<Secret>().await?;
             let bytes = serde_json::to_vec(&payload)?;
             kv.put_bytes(&id, &bytes)?
