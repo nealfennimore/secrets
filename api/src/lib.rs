@@ -31,13 +31,12 @@ pub async fn main(req: Request, env: Env, _ctx: worker::Context) -> Result<Respo
         .post_async("/retrieve", |mut req, ctx| async move {
             let kv = ctx.kv(&KV_NAMESPACE)?;
             let payload = req.json::<SecretId>().await?;
-            let bytes = kv
-                .get(&payload.id.to_string())
-                .bytes()
-                .await?
-                .expect("No secret found");
+            let bytes = kv.get(&payload.id.to_string()).bytes().await?;
+            if bytes.is_none() {
+                return Response::error("Secret not found", 404);
+            }
             kv.delete(&payload.id.to_string()).await?;
-            let secret: Secret = serde_json::from_slice(&bytes)?;
+            let secret: Secret = serde_json::from_slice(&bytes.unwrap())?;
             Response::from_json(&secret)
         })
         .post_async("/store", |mut req, ctx| async move {
