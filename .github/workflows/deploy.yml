@@ -11,6 +11,10 @@ on:
 jobs:
     client:
         runs-on: ubuntu-latest
+        defaults:
+            run:
+                shell: bash
+                working-directory: ./client
         steps:
             - uses: actions/checkout@v3
             - uses: actions/setup-node@v3
