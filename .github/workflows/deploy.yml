@@ -75,7 +75,6 @@ jobs:
                   rustflags: '--cfg getrandom_backend="wasm_js"'
 
             - name: Deploy with wrangler
-              run: |
-                  npx wrangler deploy -c wrangler.toml
-              env:
-                  CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+              uses: cloudflare/wrangler-action@v3
+              with:
+                  apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
