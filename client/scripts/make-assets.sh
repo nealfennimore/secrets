@@ -1,8 +1,10 @@
 #! /usr/bin/env bash
 
-rm assets/{app.css,index.js,index.js.map}
+rm assets/{app.css,index.js,index.js.map} || true
 
 npm run build:client:css
+
+mkdir -p build
 
 cp assets/* build/
 
