@@ -69,11 +69,6 @@ jobs:
                       ${{ runner.os }}-build-
                       ${{ runner.os }}-
 
-            - uses: actions-rust-lang/setup-rust-toolchain@v1
-              with:
-                  target: wasm32-unknown-unknown
-                  rustflags: '--cfg getrandom_backend="wasm_js"'
-
             - name: Deploy with wrangler
               run: |
                   npx wrangler deploy
