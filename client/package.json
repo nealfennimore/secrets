@@ -9,7 +9,7 @@
         "prepare": "npm run build",
         "prebuild": "rm -rf build",
         "build": "tsc -noEmit && npm run build:client",
-        "build:client": "esbuild ./src/index.ts --bundle --minify --sourcemap --format=esm --external:node:crypto --outdir=assets",
+        "build:client": "esbuild ./src/index.ts --bundle --minify --sourcemap --format=esm --external:node:crypto --outdir=build",
         "build:client:css": "npx tailwindcss -i ./assets/tailwind.css -o ./assets/app.css",
         "dev:client": "./scripts/dev-client.sh",
         "postbuild": "./scripts/make-assets.sh",

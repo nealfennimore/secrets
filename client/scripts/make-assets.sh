@@ -1,6 +1,6 @@
 #! /usr/bin/env bash
 
-rm assets/{app.css,index.js,index.js.map} || true
+rm assets/app.css || true
 
 npm run build:client:css
 
