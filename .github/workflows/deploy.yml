@@ -69,8 +69,18 @@ jobs:
                       ${{ runner.os }}-build-
                       ${{ runner.os }}-
 
+            # - name: Cache cargo
+            #   uses: actions/cache@v3
+            #   with:
+            #       path: |
+            #           ~/.cargo/registry
+            #           ~/.cargo/git
+            #           target
+            #       key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+
             - name: Deploy with wrangler
               run: |
                   npx wrangler deploy
               env:
+                  RUSTFLAGS: '--cfg getrandom_backend="wasm_js"'
                   CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
