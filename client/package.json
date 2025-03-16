@@ -1,0 +1,21 @@
+{
+    "name": "secrets_client",
+    "version": "0.0.1",
+    "type": "module",
+    "engines": {
+        "node": ">=22"
+    },
+    "scripts": {
+        "build": "tsc --build",
+        "watch": "tsc --watch"
+    },
+    "author": "Neal Fennimore",
+    "license": "MIT",
+    "description": "",
+    "devDependencies": {
+        "typescript": "^5.8.2"
+    },
+    "dependencies": {
+        "@nfen/webcrypto-ts": "^0.1.16"
+    }
+}

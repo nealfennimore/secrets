@@ -23,6 +23,6 @@ mkShell {
 
   packages = [
     cargo
-    nodejs
+    nodejs_22
   ];
 }

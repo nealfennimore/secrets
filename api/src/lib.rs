@@ -7,7 +7,7 @@ use worker::*;
 #[derive(Deserialize, Serialize, Validate)]
 pub struct Secret {
     #[serde(with = "serde_bytes")]
-    iv: [u8; 32],
+    iv: [u8; 16],
     #[serde(with = "serde_bytes")]
     #[validate(min_items = 1)]
     #[validate(max_items = 32768)]
