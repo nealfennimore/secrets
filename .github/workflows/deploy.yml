@@ -80,8 +80,8 @@ jobs:
 
             - name: Deploy with wrangler
               run: |
-                  cargo build --target=wasm32-unknown-unknown
-                  npx wrangler deploy
+                  cargo build --target=wasm32-unknown-unknown --release
+                  printenv
               env:
                   RUSTFLAGS: '--cfg getrandom_backend="wasm_js"'
                   CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
