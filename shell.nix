@@ -17,9 +17,7 @@ mkShell {
     pkg-config
   ];
 
-  shellHook = ''
-    export RUSTFLAGS='--cfg getrandom_backend="wasm_js"'
-  '';
+  shellHook = '''';
 
   packages = [
     cargo
