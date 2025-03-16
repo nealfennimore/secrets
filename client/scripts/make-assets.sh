@@ -2,7 +2,7 @@
 
 rm assets/{app.css,index.js,index.js.map}
 
-npx tailwindcss -i ./assets/tailwind.css -o ./assets/app.css
+npm run build:client:css
 
 cp assets/* build/
 

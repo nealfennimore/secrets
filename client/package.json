@@ -6,10 +6,15 @@
         "node": ">=22"
     },
     "scripts": {
+        "prepare": "npm run build",
+        "prebuild": "rm -rf build",
         "build": "tsc -noEmit && npm run build:client",
         "build:client": "esbuild ./src/index.ts --bundle --minify --sourcemap --format=esm --external:node:crypto --outdir=assets",
         "build:client:css": "npx tailwindcss -i ./assets/tailwind.css -o ./assets/app.css",
-        "dev:client": "./scripts/dev-client.sh"
+        "dev:client": "./scripts/dev-client.sh",
+        "postbuild": "./scripts/make-assets.sh",
+        "predeploy": "npm run build",
+        "deploy": "gh-pages -d build"
     },
     "author": "Neal Fennimore",
     "license": "MIT",
@@ -17,6 +22,7 @@
     "devDependencies": {
         "@tailwindcss/forms": "^0.5.10",
         "esbuild": "^0.25.1",
+        "gh-pages": "^6.3.0",
         "tailwindcss": "^3.4.17",
         "typescript": "^5.8.2"
     },
