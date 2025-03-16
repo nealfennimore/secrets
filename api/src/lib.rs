@@ -1,7 +1,6 @@
 use serde::{Deserialize, Serialize};
 use serde_json;
 use serde_valid::Validate;
-use std::collections::HashMap;
 use uuid::Uuid;
 use worker::*;
 
@@ -27,7 +26,7 @@ fn cors_headers() -> Cors {
         .with_methods(vec![Method::Options, Method::Post])
 }
 
-async fn handle_options(req: Request) -> Result<Response> {
+async fn handle_options(_req: Request) -> Result<Response> {
     Response::empty()?.with_cors(&cors_headers())
 }
 
