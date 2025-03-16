@@ -1,67 +1,88 @@
-import { AES, KDF, Random, SHA } from "@nfen/webcrypto-ts";
+import { API } from "./api.js";
+import * as Crypto from "./crypto.js";
+import * as dom from "./dom.js";
+import * as url from "./url.js";
+import { decode, encode } from "./utils.js";
 
-function concatBuffer(...buffers: ArrayBuffer[]) {
-    const length = buffers.reduce((acc, b) => acc + b.byteLength, 0);
-    const tmp = new Uint8Array(length);
+async function handleDecryption(e: SubmitEvent) {
+    e.preventDefault();
+    if (dom.Decrypt.form.reportValidity() && window.location.hash) {
+        const { id, salt, entropy } = url.decodeHashPayload();
+        const { iv, ciphertext } = await API.retrieve({ id });
+        const password = await Crypto.hashPassword(
+            encode(dom.Decrypt.password.value.trim())
+        );
+        const key = await Crypto.deriveKey({
+            salt,
+            entropy,
+            password,
+        });
+        const plaintext = await Crypto.decrypt({ key, iv, ciphertext });
 
-    let prev = 0;
-    for (let buffer of buffers) {
-        tmp.set(new Uint8Array(buffer), prev);
-        prev += buffer.byteLength;
+        dom.Decrypt.secret.value = decode(plaintext);
+        dom.Decrypt.form.classList.add("hidden");
+        dom.Decrypt.aside.classList.remove("hidden");
+    }
+    return false;
+}
+
+async function handleEncryption(e: SubmitEvent) {
+    e.preventDefault();
+    if (dom.Encrypt.form.reportValidity()) {
+        const password = await Crypto.hashPassword(
+            encode(dom.Encrypt.password.value.trim())
+        );
+        const { key, salt, entropy } = await Crypto.generateKey(password);
+        const plaintext = encode(dom.Encrypt.secret.value);
+        const payload = await Crypto.encrypt({ key, plaintext });
+        const { id } = await API.store(payload);
+        const hash = url.encodeHashPayload({ salt, entropy, id });
+        dom.Encrypt.url.value = `${location.href}#${hash}`;
+        dom.Encrypt.form.classList.add("hidden");
+        dom.Encrypt.aside.classList.remove("hidden");
+    }
+    return false;
+}
+
+const copy = (input: HTMLInputElement | HTMLTextAreaElement) =>
+    function onCopy(e: Event) {
+        if (e.target) {
+            const $defaultMessage = e.target.querySelector(".default-message");
+            const $successMessage = e.target.querySelector(".success-message");
+
+            navigator.clipboard.writeText(input.value).then(() => {
+                $defaultMessage.classList.add("hidden");
+                $successMessage.classList.remove("hidden");
+
+                // reset to default state
+                setTimeout(() => {
+                    $defaultMessage.classList.remove("hidden");
+                    $successMessage.classList.add("hidden");
+                }, 2000);
+            });
+        }
+    };
+
+function setup() {
+    dom.Encrypt.form.reset();
+    dom.Decrypt.form.reset();
+
+    dom.Encrypt.form.addEventListener("submit", handleEncryption);
+    dom.Decrypt.form.addEventListener("submit", handleDecryption);
+
+    dom.Encrypt.url.value = "";
+    dom.Decrypt.secret.value = "";
+
+    if (window.location.hash) {
+        dom.Decrypt.section.classList.remove("hidden");
+    } else {
+        dom.Encrypt.section.classList.remove("hidden");
     }
 
-    return tmp.buffer;
+    dom.Encrypt.copy.addEventListener("click", copy(dom.Encrypt.url));
+    dom.Decrypt.copy.addEventListener("click", copy(dom.Decrypt.secret));
+
+    dom.loader.classList.add("hidden");
 }
 
-async function encrypt(
-    key: AES.AesGcmProxiedCryptoKey,
-    plaintext: ArrayBuffer
-) {
-    const iv = await Random.IV.generate(16);
-    const ciphertext = await key.encrypt({ iv }, plaintext);
-    return {
-        iv,
-        ciphertext,
-    };
-}
-async function decrypt(
-    key: AES.AesGcmProxiedCryptoKey,
-    iv: ArrayBuffer,
-    ciphertext: ArrayBuffer
-) {
-    return await key.decrypt({ iv }, ciphertext);
-}
-
-async function generateKey(password: ArrayBuffer) {
-    const salt = await Random.Salt.generate(16);
-    const entropy = await Random.getValues(16);
-    return await deriveKey(salt, entropy, password);
-}
-
-async function deriveKey(
-    salt: ArrayBuffer,
-    entropy: ArrayBuffer,
-    password: ArrayBuffer
-) {
-    const keyMaterial = await KDF.PBKDF2.generateKeyMaterial(
-        "raw",
-        concatBuffer(entropy, password)
-    );
-
-    const key = (await keyMaterial.deriveKey(
-        {
-            hash: SHA.Alg.Variant.SHA_256,
-            salt,
-        },
-        {
-            name: AES.Alg.Mode.AES_GCM,
-            length: 256,
-        }
-    )) as AES.AesGcmProxiedCryptoKey;
-
-    return {
-        key,
-        salt,
-        entropy,
-    };
-}
+setup();

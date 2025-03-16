@@ -1,6 +1,6 @@
 .direnv
 node_modules
-dist
+build
 
 # Added by cargo
 
