@@ -22,6 +22,11 @@ async function handleDecryption(e: SubmitEvent) {
         dom.Decrypt.secret.value = decode(plaintext);
         dom.Decrypt.form.classList.add("hidden");
         dom.Decrypt.aside.classList.remove("hidden");
+        history.replaceState(
+            "",
+            document.title,
+            window.location.pathname + window.location.search
+        );
     }
     return false;
 }
@@ -47,7 +52,9 @@ async function handleEncryption(e: SubmitEvent) {
 const copy = (input: HTMLInputElement | HTMLTextAreaElement) =>
     function onCopy(e: Event) {
         if (e.target) {
+            // @ts-ignore
             const $defaultMessage = e.target.querySelector(".default-message");
+            // @ts-ignore
             const $successMessage = e.target.querySelector(".success-message");
 
             navigator.clipboard.writeText(input.value).then(() => {
