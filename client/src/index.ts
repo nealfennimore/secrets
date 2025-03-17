@@ -88,6 +88,10 @@ function showError(e: any) {
     dom.error.classList.remove("hidden");
 }
 
+function hideError() {
+    dom.error.classList.add("hidden");
+}
+
 function setup() {
     dom.Encrypt.form.reset();
     dom.Decrypt.form.reset();
@@ -108,9 +112,8 @@ function setup() {
     dom.Decrypt.copy.addEventListener("click", copy(dom.Decrypt.secret));
 
     dom.loader.classList.add("hidden");
-    dom.error
-        .querySelector("button")
-        ?.addEventListener("click", () => dom.error.classList.add("hidden"));
+    dom.error.querySelector("button")?.addEventListener("click", hideError);
+    document.addEventListener("submit", hideError);
 }
 
 setup();
