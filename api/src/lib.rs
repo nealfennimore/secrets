@@ -11,8 +11,8 @@ pub struct Secret {
     #[serde(with = "serde_bytes")]
     iv: [u8; 16],
     #[serde(with = "serde_bytes")]
-    #[validate(min_items = 1)]
-    #[validate(max_items = 32768)]
+    #[validate(min_items = 1, message = "Minimum of 1 byte")]
+    #[validate(max_items = 32768, message = "Maximum of 32 KB")]
     ciphertext: Vec<u8>,
 }
 
