@@ -4,6 +4,8 @@ use serde_valid::Validate;
 use uuid::Uuid;
 use worker::*;
 
+const KV_NAMESPACE: &str = "secrets";
+
 #[derive(Deserialize, Serialize, Validate)]
 pub struct Secret {
     #[serde(with = "serde_bytes")]
@@ -19,6 +21,12 @@ pub struct SecretId {
     id: Uuid,
 }
 
+#[derive(Deserialize, Serialize)]
+pub struct ResponseError {
+    status: u16,
+    message: String,
+}
+
 fn cors_headers() -> Cors {
     Cors::new()
         .with_origins(vec!["https://secrets.neal.codes"])
@@ -30,11 +38,23 @@ fn response() -> Result<ResponseBuilder> {
     ResponseBuilder::new().with_cors(&cors_headers())
 }
 
-async fn handle_options(_req: Request) -> Result<Response> {
-    Ok(response()?.empty())
+fn bad_request(message: String) -> Result<Response> {
+    response()?.with_status(400).from_json(&ResponseError {
+        message,
+        status: 400,
+    })
 }
 
-const KV_NAMESPACE: &str = "secrets";
+fn not_found(message: String) -> Result<Response> {
+    response()?.with_status(404).from_json(&ResponseError {
+        message,
+        status: 404,
+    })
+}
+
+async fn handle_options(_req: Request, _ctx: RouteContext<()>) -> Result<Response> {
+    Ok(response()?.empty())
+}
 
 #[event(fetch, respond_with_errors)]
 pub async fn main(req: Request, env: Env, _ctx: worker::Context) -> Result<Response> {
@@ -43,31 +63,31 @@ pub async fn main(req: Request, env: Env, _ctx: worker::Context) -> Result<Respo
     let router = Router::new();
 
     router
-        .options_async("/retrieve", |req, _ctx| handle_options(req))
+        .options_async("/retrieve", handle_options)
         .post_async("/retrieve", |mut req, ctx| async move {
             let payload = match req.json::<SecretId>().await {
                 Ok(p) => p,
-                Err(e) => return response()?.error(e.to_string(), 400),
+                Err(e) => return bad_request(e.to_string()),
             };
 
             let kv = ctx.kv(&KV_NAMESPACE)?;
             let bytes = kv.get(&payload.id.to_string()).bytes().await?;
             if bytes.is_none() {
-                return response()?.error("Secret not found", 404);
+                return not_found("Secret not found".to_string());
             }
             kv.delete(&payload.id.to_string()).await?;
             let secret: Secret = serde_json::from_slice(&bytes.unwrap())?;
             response()?.from_json(&secret)
         })
-        .options_async("/store", |req, _ctx| handle_options(req))
+        .options_async("/store", handle_options)
         .post_async("/store", |mut req, ctx| async move {
             let payload = match req.json::<Secret>().await {
                 Ok(p) => p,
-                Err(e) => return response()?.error(e.to_string(), 400),
+                Err(e) => return bad_request(e.to_string()),
             };
             let validation = payload.validate().map_err(|e| e.to_string());
             if validation.is_err() {
-                return response()?.error(validation.err().unwrap(), 400);
+                return bad_request(validation.err().unwrap());
             }
 
             let kv = ctx.kv(&KV_NAMESPACE)?;
