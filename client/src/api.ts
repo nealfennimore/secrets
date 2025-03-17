@@ -9,6 +9,11 @@ const makeRequest = (endpoint: string, payload: object = {}) =>
         })
     );
 
+interface ErrorResponse {
+    status: Number;
+    message: string;
+}
+
 export namespace API {
     interface RetrievePayload {
         id: string;
@@ -28,7 +33,8 @@ export namespace API {
                 ciphertext: Uint8Array.from(ciphertext).buffer,
             };
         }
-        throw new Error("Could not retrieve");
+        const error = (await response.json()) as ErrorResponse;
+        throw new Error(error?.message);
     }
     interface StorePayload {
         ciphertext: Array<Number>;
@@ -53,6 +59,7 @@ export namespace API {
         if (response.ok) {
             return (await response.json()) as StoreResponse;
         }
-        throw new Error("Could not store");
+        const error = (await response.json()) as ErrorResponse;
+        throw new Error(error?.message);
     }
 }

@@ -1,4 +1,5 @@
 export const loader = document.querySelector("section#loader") as HTMLElement;
+export const error = document.querySelector("aside#error") as HTMLElement;
 
 export namespace Encrypt {
     export const section = document.querySelector(
