@@ -796,6 +796,10 @@ select {
   margin-inline-end: 0.375rem;
 }
 
+.ml-4 {
+  margin-left: 1rem;
+}
+
 .ms-3 {
   margin-inline-start: 0.75rem;
 }
@@ -973,6 +977,10 @@ select {
   background-color: rgb(17 24 39 / var(--tw-bg-opacity, 1));
 }
 
+.fill-blue-300 {
+  fill: #93c5fd;
+}
+
 .fill-blue-600 {
   fill: #2563eb;
 }
@@ -1041,6 +1049,14 @@ select {
 .text-white {
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity, 1));
+}
+
+button[type=submit] div[role=status] {
+  display: none;
+}
+
+button[type=submit]:disabled div[role=status] {
+  display: inline-block;
 }
 
 .hover\:bg-blue-800:hover {
