@@ -53,7 +53,7 @@ async function handleEncryption(e: SubmitEvent) {
             const payload = await Crypto.encrypt({ key, plaintext });
             const { id } = await API.store(payload);
             const hash = url.encodeHashPayload({ salt, entropy, id });
-            dom.Encrypt.url.value = `${location.href}#${hash}`;
+            dom.Encrypt.url.value = `${location.origin}#${hash}`;
             dom.Encrypt.form.classList.add("hidden");
             dom.Encrypt.aside.classList.remove("hidden");
         } catch (err: any) {
