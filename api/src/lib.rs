@@ -21,7 +21,7 @@ pub struct SecretId {
 
 fn cors_headers() -> Cors {
     Cors::new()
-        .with_origins(vec!["*"])
+        .with_origins(vec!["secrets.neal.codes"])
         .with_allowed_headers(vec!["content-type"])
         .with_methods(vec![Method::Options, Method::Post])
 }
