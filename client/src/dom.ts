@@ -8,6 +8,7 @@ export namespace Encrypt {
     export const form = section.querySelector(
         "form#encrypt-form"
     ) as HTMLFormElement;
+    export const formBtn = form.querySelector("button") as HTMLButtonElement;
     export const password = form.querySelector(
         "input#encrypt-password"
     ) as HTMLInputElement;
@@ -34,6 +35,8 @@ export namespace Decrypt {
     export const form = section.querySelector(
         "form#decrypt-form"
     ) as HTMLFormElement;
+
+    export const formBtn = form.querySelector("button") as HTMLButtonElement;
     export const password = section.querySelector(
         "input#decrypt-password"
     ) as HTMLInputElement;

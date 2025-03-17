@@ -8,6 +8,7 @@ async function handleDecryption(e: SubmitEvent) {
     e.preventDefault();
     if (dom.Decrypt.form.reportValidity() && window.location.hash) {
         try {
+            dom.Decrypt.formBtn.setAttribute("disabled", "disabled");
             const { id, salt, entropy } = url.decodeHashPayload();
             const { iv, ciphertext } = await API.retrieve({ id });
             const password = await Crypto.hashPassword(
@@ -30,6 +31,8 @@ async function handleDecryption(e: SubmitEvent) {
             );
         } catch (err: any) {
             showError(err);
+        } finally {
+            dom.Decrypt.formBtn.removeAttribute("disabled");
         }
     }
     return false;
@@ -39,6 +42,7 @@ async function handleEncryption(e: SubmitEvent) {
     e.preventDefault();
     if (dom.Encrypt.form.reportValidity()) {
         try {
+            dom.Encrypt.formBtn.setAttribute("disabled", "disabled");
             const password = await Crypto.hashPassword(
                 encode(dom.Encrypt.password.value.trim())
             );
@@ -52,6 +56,8 @@ async function handleEncryption(e: SubmitEvent) {
             dom.Encrypt.aside.classList.remove("hidden");
         } catch (err: any) {
             showError(err);
+        } finally {
+            dom.Encrypt.formBtn.removeAttribute("disabled");
         }
     }
     return false;
