@@ -1,3 +1,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+button[type=submit] div[role=status] {
+    display: none;
+}
+
+button[type=submit]:disabled div[role=status] {
+    display: inline-block;
+}

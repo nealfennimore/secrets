@@ -5,6 +5,7 @@ import * as url from "./url.js";
 import { decode, encode } from "./utils.js";
 
 async function handleDecryption(e: SubmitEvent) {
+    hideError();
     e.preventDefault();
     if (dom.Decrypt.form.reportValidity() && window.location.hash) {
         try {
@@ -39,6 +40,7 @@ async function handleDecryption(e: SubmitEvent) {
 }
 
 async function handleEncryption(e: SubmitEvent) {
+    hideError();
     e.preventDefault();
     if (dom.Encrypt.form.reportValidity()) {
         try {
@@ -119,7 +121,6 @@ function setup() {
 
     dom.loader.classList.add("hidden");
     dom.error.querySelector("button")?.addEventListener("click", hideError);
-    document.addEventListener("submit", hideError);
 }
 
 setup();
