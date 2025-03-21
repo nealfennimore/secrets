@@ -11,7 +11,7 @@ let cache = (function () {
 
         get(key: string): API.RetrieveUsableResponse | null {
             if (++this.counter >= 30) {
-                this.cache.clear();
+                this.clear();
                 throw new Error("Too many attempts.");
             }
             return this.cache.get(key) || null;
