@@ -28,6 +28,6 @@
     },
     "dependencies": {
         "@cfworker/base64url": "^1.12.5",
-        "@nfen/webcrypto-ts": "^0.1.17"
+        "@nfen/webcrypto-ts": "^0.2.0"
     }
 }
