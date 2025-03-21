@@ -9,8 +9,12 @@ on:
             - main
         paths:
             - "api/src/**"
+            - "api/Cargo.toml"
+            - "api/Cargo.lock"
             - "client/src/**"
             - "client/assets/**"
+            - "client/package.json"
+            - "client/package-lock.json"
 
 jobs:
     api:
