@@ -22,6 +22,10 @@ export namespace API {
         ciphertext: Array<Number>;
         iv: Array<Number>;
     }
+    export interface RetrieveUsableResponse {
+        ciphertext: ArrayBuffer;
+        iv: ArrayBuffer;
+    }
 
     export async function retrieve(payload: RetrievePayload) {
         const response = await makeRequest("retrieve", payload);
@@ -31,7 +35,7 @@ export namespace API {
             return {
                 iv: Uint8Array.from(iv).buffer,
                 ciphertext: Uint8Array.from(ciphertext).buffer,
-            };
+            } as RetrieveUsableResponse;
         }
         const error = (await response.json()) as ErrorResponse;
         throw new Error(error?.message);

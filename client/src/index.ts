@@ -4,6 +4,35 @@ import * as dom from "./dom.js";
 import * as url from "./url.js";
 import { decode, encode } from "./utils.js";
 
+let cache = (function () {
+    class Cache {
+        private cache: Map<string, API.RetrieveUsableResponse> = new Map();
+        private counter: number = 0;
+
+        get(key: string): API.RetrieveUsableResponse | null {
+            if (++this.counter >= 30) {
+                this.cache.clear();
+                throw new Error("Too many attempts.");
+            }
+            return this.cache.get(key) || null;
+        }
+        has(key: string): boolean {
+            return this.cache.has(key);
+        }
+        set(key: string, value: API.RetrieveUsableResponse) {
+            if (!this.cache.has(key)) {
+                this.cache.set(key, value);
+            }
+        }
+        clear() {
+            this.cache.clear();
+            this.counter = 0;
+        }
+    }
+
+    return new Cache();
+})();
+
 async function handleDecryption(e: SubmitEvent) {
     hideError();
     e.preventDefault();
@@ -11,7 +40,16 @@ async function handleDecryption(e: SubmitEvent) {
         try {
             dom.Decrypt.formBtn.setAttribute("disabled", "disabled");
             const { id, salt, entropy } = url.decodeHashPayload();
-            const { iv, ciphertext } = await API.retrieve({ id });
+
+            let response: API.RetrieveUsableResponse;
+            if (!cache.has(id)) {
+                response = await API.retrieve({ id });
+                cache.set(id, response);
+            } else {
+                response = cache.get(id) as API.RetrieveUsableResponse;
+            }
+
+            const { iv, ciphertext } = response;
             const password = await Crypto.hashPassword(
                 encode(dom.Decrypt.password.value.trim())
             );
@@ -30,6 +68,8 @@ async function handleDecryption(e: SubmitEvent) {
                 document.title,
                 window.location.pathname + window.location.search
             );
+
+            cache.clear();
         } catch (err: any) {
             showError(err);
         } finally {
