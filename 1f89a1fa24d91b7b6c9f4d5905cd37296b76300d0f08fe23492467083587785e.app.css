@@ -761,6 +761,10 @@ select {
   border-width: 0;
 }
 
+.static {
+  position: static;
+}
+
 .col-span-1 {
   grid-column: span 1 / span 1;
 }
