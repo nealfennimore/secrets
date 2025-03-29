@@ -39,7 +39,7 @@ async function handleDecryption(e: SubmitEvent) {
     if (dom.Decrypt.form.reportValidity() && window.location.hash) {
         try {
             dom.Decrypt.formBtn.setAttribute("disabled", "disabled");
-            const { id, salt, entropy } = url.decodeHashPayload();
+            const { id, salt, entropy } = url.encodeHashPayload();
 
             let response: API.RetrieveUsableResponse;
             if (!cache.has(id)) {
@@ -92,7 +92,7 @@ async function handleEncryption(e: SubmitEvent) {
             const plaintext = encode(dom.Encrypt.secret.value);
             const payload = await Crypto.encrypt({ key, plaintext });
             const { id } = await API.store(payload);
-            const hash = url.encodeHashPayload({ salt, entropy, id });
+            const hash = url.decodeHashPayload({ salt, entropy, id });
             dom.Encrypt.url.value = `${location.origin}#${hash}`;
             dom.Encrypt.form.classList.add("hidden");
             dom.Encrypt.aside.classList.remove("hidden");

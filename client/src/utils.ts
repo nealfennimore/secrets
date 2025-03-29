@@ -16,37 +16,21 @@ export function concatBuffer(...buffers: ArrayBuffer[]) {
     return tmp.buffer;
 }
 
-export const toBase64Url = _toBase64Url;
-export const fromBase64Url = _fromBase64Url;
-
 const encoder = new TextEncoder();
 const decoder = new TextDecoder();
 export const encode = encoder.encode.bind(encoder);
 export const decode = decoder.decode.bind(decoder);
-export const byteStringToBuffer = (byteString: string) =>
-    Uint8Array.from(byteString, (e) => e.charCodeAt(0)).buffer;
 
-export const bufferToByteString = (buffer: ArrayBuffer) =>
+export const toBase64Url = _toBase64Url;
+export const fromBase64Url = _fromBase64Url;
+
+export const stringToBuffer = (str: string) =>
+    Uint8Array.from(str, (e) => e.charCodeAt(0)).buffer;
+
+export const bufferToString = (buffer: ArrayBuffer) =>
     String.fromCharCode(...new Uint8Array(buffer));
 
-export const safeDecode = (data: string) =>
-    byteStringToBuffer(fromBase64Url(data));
-export const safeEncode = (data: ArrayBuffer): string =>
-    toBase64Url(bufferToByteString(data));
-
-// // @ts-ignore
-// window.safeDecode = safeDecode;
-// // @ts-ignore
-// window.safeEncode = safeEncode;
-// // @ts-ignore
-// window.decode = decode;
-// // @ts-ignore
-// window.encode = encode;
-// // @ts-ignore
-// window.toBase64Url = toBase64Url;
-// // @ts-ignore
-// window.fromBase64Url = fromBase64Url;
-// // @ts-ignore
-// window.byteStringToBuffer = byteStringToBuffer;
-// // @ts-ignore
-// window.bufferToByteString = bufferToByteString;
+export const safeEncode = (data: string): ArrayBuffer =>
+    stringToBuffer(fromBase64Url(data));
+export const safeDecode = (data: ArrayBuffer): string =>
+    toBase64Url(bufferToString(data));
