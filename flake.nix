@@ -37,6 +37,13 @@
           default = pkgs.mkShell {
             RUST_SRC_PATH = "${rustToolchain}/lib/rustlib/src/rust/library";
 
+            # `cargo install worker-build` (run by wrangler's build step) drops
+            # binaries in CARGO_HOME/bin. Put it on PATH so non-interactive
+            # shells (VSCode tasks, wrangler's /bin/sh) can find worker-build.
+            shellHook = ''
+              export PATH="''${CARGO_HOME:-$HOME/.cargo}/bin:$PATH"
+            '';
+
             buildInputs = with pkgs; [
               openssl
               rustToolchain
