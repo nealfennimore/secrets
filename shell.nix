@@ -17,10 +17,11 @@ mkShell {
     pkg-config
   ];
 
-  shellHook = '''';
+  shellHook = "";
 
   packages = [
     cargo
     nodejs_22
+    python312
   ];
 }

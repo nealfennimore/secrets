@@ -1,0 +1,51 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Client: Dev",
+            "detail": "Serve the client and rebuild JS/CSS on change",
+            "type": "shell",
+            "command": "npm run dev:client",
+            "options": {
+                "cwd": "${workspaceFolder}/client"
+            },
+            "isBackground": true,
+            "problemMatcher": [],
+            "presentation": {
+                "group": "dev",
+                "panel": "dedicated",
+                "reveal": "always"
+            }
+        },
+        {
+            "label": "API: Dev",
+            "detail": "Build the Rust worker and serve it locally with Wrangler",
+            "type": "shell",
+            "command": "npx wrangler dev",
+            "options": {
+                "cwd": "${workspaceFolder}/api"
+            },
+            "isBackground": true,
+            "problemMatcher": [],
+            "presentation": {
+                "group": "dev",
+                "panel": "dedicated",
+                "reveal": "always"
+            }
+        },
+        {
+            "label": "Dev",
+            "detail": "Run the client and API together",
+            "dependsOn": [
+                "Client: Dev",
+                "API: Dev"
+            ],
+            "dependsOrder": "parallel",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        }
+    ]
+}

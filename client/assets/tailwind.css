@@ -2,10 +2,93 @@
 @tailwind components;
 @tailwind utilities;
 
-button[type=submit] div[role=status] {
+@layer base {
+    html {
+        scroll-behavior: smooth;
+    }
+}
+
+/* Show the inline spinner only while a submit button is working */
+button[type="submit"] [role="status"] {
     display: none;
 }
 
-button[type=submit]:disabled div[role=status] {
-    display: inline-block;
+button[type="submit"]:disabled [role="status"] {
+    display: inline-flex;
+}
+
+/* Soft animated aurora background */
+.blob {
+    position: absolute;
+    border-radius: 9999px;
+    filter: blur(80px);
+    opacity: 0.5;
+    will-change: transform;
+}
+
+.blob-1 {
+    top: -8rem;
+    left: -6rem;
+    height: 24rem;
+    width: 24rem;
+    background: radial-gradient(circle at 30% 30%, #6366f1, transparent 70%);
+    animation: drift 18s ease-in-out infinite;
+}
+
+.blob-2 {
+    bottom: -10rem;
+    right: -6rem;
+    height: 28rem;
+    width: 28rem;
+    background: radial-gradient(circle at 70% 70%, #a855f7, transparent 70%);
+    animation: drift 23s ease-in-out infinite reverse;
+}
+
+.blob-3 {
+    top: 35%;
+    left: 45%;
+    height: 20rem;
+    width: 20rem;
+    opacity: 0.32;
+    background: radial-gradient(circle at 50% 50%, #ec4899, transparent 70%);
+    animation: drift 27s ease-in-out infinite;
+}
+
+@keyframes drift {
+    0%,
+    100% {
+        transform: translate(0, 0) scale(1);
+    }
+    33% {
+        transform: translate(4rem, -3rem) scale(1.1);
+    }
+    66% {
+        transform: translate(-3rem, 3rem) scale(0.95);
+    }
+}
+
+/* Faint grid overlay, faded toward the edges */
+.bg-grid {
+    background-image: linear-gradient(
+            rgba(255, 255, 255, 0.035) 1px,
+            transparent 1px
+        ),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+    background-size: 40px 40px;
+    -webkit-mask-image: radial-gradient(
+        ellipse at center,
+        black 0%,
+        transparent 75%
+    );
+    mask-image: radial-gradient(ellipse at center, black 0%, transparent 75%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .blob {
+        animation: none;
+    }
+
+    html {
+        scroll-behavior: auto;
+    }
 }

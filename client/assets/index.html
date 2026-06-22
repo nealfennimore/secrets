@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#020617">
+    <meta name="description" content="Share a secret with end-to-end encryption. Read once, then gone forever.">
     <meta http-equiv="Content-Security-Policy"
         content="default-src 'self' 'unsafe-inline' secrets.api.neal.codes static.cloudflareinsights.com">
     <title>Secrets</title>
@@ -16,24 +18,33 @@
     <script defer type="module" src="index.js"></script>
 </head>
 
-<body class="flex flex-col min-h-screen bg-gray-50 dark:bg-gray-800 dark:border-gray-700 text-gray-200">
-    <aside id="error" class="hidden">
-        <div id="alert-2"
-            class="flex items-center p-4 mb-4 text-red-800 rounded-lg bg-gray-900 dark:text-red-400 w-full"
-            role="alert">
-            <svg class="shrink-0 w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                viewBox="0 0 20 20">
+<body
+    class="relative flex min-h-screen flex-col overflow-x-hidden bg-slate-950 text-slate-200 antialiased selection:bg-indigo-500/40 selection:text-white">
+
+    <!-- Decorative background -->
+    <div aria-hidden="true" class="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+        <div class="absolute inset-0 bg-grid"></div>
+    </div>
+
+    <!-- Error toast -->
+    <aside id="error" class="fixed inset-x-0 top-4 z-50 hidden justify-center px-4">
+        <div id="alert-2" role="alert"
+            class="flex w-full max-w-md items-center gap-3 rounded-2xl border border-red-500/30 bg-red-950/80 p-4 text-red-200 shadow-2xl shadow-red-950/50 backdrop-blur-md">
+            <svg class="h-5 w-5 shrink-0 text-red-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                fill="currentColor" viewBox="0 0 20 20">
                 <path
                     d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
             </svg>
-            <span class="sr-only">Info</span>
-            <div id="error-text" class="ms-3 text-sm font-medium">
-            </div>
+            <span class="sr-only">Error</span>
+            <div id="error-text" class="flex-1 text-sm font-medium"></div>
             <button type="button"
-                class="ms-auto -mx-1.5 -my-1.5 text-red-500 rounded-lg focus:ring-2 focus:ring-red-400 p-1.5 inline-flex items-center justify-center h-8 w-8"
+                class="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-red-400 transition hover:bg-red-500/10 hover:text-red-200 focus:outline-none focus:ring-2 focus:ring-red-400/50"
                 data-dismiss-target="#alert-2" aria-label="Close">
                 <span class="sr-only">Close</span>
-                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                <svg class="h-3.5 w-3.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
                     viewBox="0 0 14 14">
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
@@ -41,13 +52,32 @@
             </button>
         </div>
     </aside>
-    <main class="grid h-full flex-grow place-items-center">
 
+    <!-- Header -->
+    <header class="w-full px-4 pb-6 pt-10 sm:pt-14">
+        <div class="mx-auto flex max-w-md flex-col items-center text-center">
+            <div
+                class="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 shadow-lg shadow-indigo-900/50 ring-1 ring-inset ring-white/20">
+                <svg class="h-7 w-7 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                    stroke-width="1.8" stroke="currentColor" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
+                </svg>
+            </div>
+            <h1
+                class="mt-4 bg-gradient-to-r from-white via-indigo-100 to-violet-300 bg-clip-text text-3xl font-bold tracking-tight text-transparent sm:text-4xl">
+                Secrets
+            </h1>
+            <p class="mt-2 text-sm text-slate-400">End-to-end encrypted &middot; read once, then gone forever</p>
+        </div>
+    </header>
 
-        <section id="loader"
-            class="flex items-center justify-center w-56 h-56 rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
-            <div role="status">
-                <svg aria-hidden="true" class="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
+    <main class="flex w-full flex-grow items-start justify-center px-4 pb-12 sm:items-center">
+        <div class="w-full max-w-md">
+
+            <!-- Loader -->
+            <section id="loader" class="flex items-center justify-center py-24">
+                <svg aria-hidden="true" class="h-10 w-10 animate-spin text-white/10 fill-indigo-500"
                     viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path
                         d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
@@ -56,145 +86,185 @@
                         d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
                         fill="currentFill" />
                 </svg>
-                <span class="sr-only">Loading...</span>
-            </div>
-        </section>
+                <span class="sr-only">Loading…</span>
+            </section>
 
-        <section id="encrypt" class="flex flex-col space-y-4 hidden">
-            <form id="encrypt-form" class="flex flex-col space-y-4">
-                <fieldset>
-                    <label class="block mb-4">
-                        <span class="block text-xl font-bold mb-2">Secret 🔏</span>
-                        <textarea id="encrypt-secret" class="block rounded w-full text-gray-700" rows="10"
-                            placeholder="Your secret to share 🤫" autocomplete="off" data-1p-ignore required></textarea>
-                    </label>
-                    <label class="block">
-                        <span class="block text-xl font-bold mb-2">Password 🔑</span>
-                        <input id="encrypt-password" class="block rounded w-full text-gray-700" type="password"
-                            placeholder="Optional password to encrypt secret with" autocomplete="off" data-1p-ignore />
-                    </label>
-                </fieldset>
+            <!-- Encrypt -->
+            <section id="encrypt" class="hidden">
+                <div
+                    class="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl shadow-black/40 backdrop-blur-xl sm:p-8">
+                    <form id="encrypt-form" class="flex flex-col gap-5">
+                        <fieldset class="flex flex-col gap-5">
+                            <label class="block">
+                                <span class="mb-2 flex items-center gap-2 text-sm font-semibold text-slate-200">
+                                    <span class="text-base">🔏</span> Your secret
+                                </span>
+                                <textarea id="encrypt-secret"
+                                    class="block w-full resize-none rounded-xl border border-white/10 bg-slate-900/60 px-4 py-3 text-slate-100 placeholder-slate-500 shadow-inner shadow-black/20 transition focus:border-indigo-400/60 focus:outline-none focus:ring-2 focus:ring-indigo-500/40"
+                                    rows="8" placeholder="Type the message you want to share securely…"
+                                    autocomplete="off" data-1p-ignore required></textarea>
+                            </label>
+                            <label class="block">
+                                <span class="mb-2 flex items-center gap-2 text-sm font-semibold text-slate-200">
+                                    <span class="text-base">🔑</span> Password
+                                    <span class="font-normal text-slate-500">— optional</span>
+                                </span>
+                                <input id="encrypt-password"
+                                    class="block w-full rounded-xl border border-white/10 bg-slate-900/60 px-4 py-3 text-slate-100 placeholder-slate-500 shadow-inner shadow-black/20 transition focus:border-indigo-400/60 focus:outline-none focus:ring-2 focus:ring-indigo-500/40"
+                                    type="password" placeholder="Add a password for an extra layer" autocomplete="off"
+                                    data-1p-ignore />
+                            </label>
+                        </fieldset>
 
-                <div class="flex rounded-md space-x-2 items-center" role="group">
-                    <button type="submit" id="encrypt-btn"
-                        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg sm:w-auto py-2.5 px-4 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 items-center inline-flex justify-center mt-4 text-lg font-bold">
-                        Encrypt
-                        <div role="status">
-                            <svg aria-hidden="true"
-                                class="ml-4 w-4 h-4 text-gray-200 animate-spin dark:text-gray-600 fill-blue-300"
-                                viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                    d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-                                    fill="currentColor" />
-                                <path
-                                    d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-                                    fill="currentFill" />
-                            </svg>
-                            <span class="sr-only">Loading...</span>
+                        <button type="submit" id="encrypt-btn"
+                            class="group inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-600 px-5 py-3 text-base font-semibold text-white shadow-lg shadow-indigo-900/40 transition hover:from-indigo-400 hover:to-violet-500 hover:shadow-indigo-800/50 focus:outline-none focus:ring-2 focus:ring-indigo-400/60 focus:ring-offset-2 focus:ring-offset-slate-950 active:scale-[.99] disabled:opacity-80">
+                            <span>Encrypt &amp; create link</span>
+                            <div role="status">
+                                <svg aria-hidden="true" class="h-4 w-4 animate-spin text-white/30 fill-white"
+                                    viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                                        fill="currentColor" />
+                                    <path
+                                        d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                                        fill="currentFill" />
+                                </svg>
+                                <span class="sr-only">Working…</span>
+                            </div>
+                        </button>
+                    </form>
+
+                    <aside id="encrypt-aside" class="mt-6 hidden border-t border-white/10 pt-6">
+                        <label class="block" for="encrypt-url">
+                            <span class="mb-2 flex items-center gap-2 text-sm font-semibold text-slate-200">
+                                <span class="text-base">🌐</span> Share this link
+                            </span>
+                        </label>
+                        <div class="flex gap-2">
+                            <input id="encrypt-url"
+                                class="block w-full min-w-0 flex-1 rounded-xl border border-white/10 bg-slate-900/60 px-4 py-3 font-mono text-sm text-indigo-200 shadow-inner shadow-black/20 focus:border-indigo-400/60 focus:outline-none focus:ring-2 focus:ring-indigo-500/40"
+                                type="text" readonly />
+                            <button id="encrypt-url-btn" type="button"
+                                class="inline-flex shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-semibold text-slate-100 transition hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-indigo-400/60">
+                                <span class="default-message inline-flex items-center gap-1.5">
+                                    <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                        viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" aria-hidden="true">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75" />
+                                    </svg>
+                                    Copy
+                                </span>
+                                <span class="success-message hidden inline-flex items-center gap-1.5 text-emerald-300">
+                                    <svg class="h-4 w-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                        viewBox="0 0 16 12">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                            stroke-width="2" d="M1 5.917 5.724 10.5 15 1.5" />
+                                    </svg>
+                                    Copied
+                                </span>
+                            </button>
                         </div>
-                    </button>
+                        <p class="mt-3 text-xs leading-relaxed text-slate-500">
+                            Anyone with this link can read the secret <strong class="font-semibold text-slate-400">once</strong>.
+                            It is deleted on first view, or after 24 hours.
+                        </p>
+                    </aside>
                 </div>
-            </form>
+            </section>
 
-            <aside id="encrypt-aside" class="hidden">
-                <label class="block col-span-1" for="encrypt-url">
-                    <span class="block text-xl font-bold mb-2">Secret URL 🌐</span>
-                </label>
-                <div class="grid grid-cols-8 gap-2 w-full max-w-[23rem]">
-                    <input id="encrypt-url" class="block rounded w-full text-gray-700 col-span-6" type="text"
-                        readonly />
-                    <button id="encrypt-url-btn" type="button"
-                        class="col-span-2 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 items-center inline-flex justify-center text-lg font-bold">
-                        <span class="default-message text-lg font-bold">Copy 📋</span>
-                        <span class="success-message hidden text-lg font-bold">
-                            <div class="inline-flex items-center">
-                                <svg class="w-3 h-3 text-white me-1.5" aria-hidden="true"
-                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 12">
+            <!-- Decrypt -->
+            <section id="decrypt" class="hidden">
+                <div
+                    class="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl shadow-black/40 backdrop-blur-xl sm:p-8">
+                    <form id="decrypt-form" class="flex flex-col gap-5">
+                        <div class="flex items-start gap-3 rounded-xl border border-indigo-400/20 bg-indigo-500/10 p-4">
+                            <span class="text-lg leading-none">🤫</span>
+                            <p class="text-sm text-slate-300">
+                                Someone shared an encrypted secret with you. Enter the password if one was set, then
+                                decrypt.
+                            </p>
+                        </div>
+                        <fieldset>
+                            <label class="block">
+                                <span class="mb-2 flex items-center gap-2 text-sm font-semibold text-slate-200">
+                                    <span class="text-base">🔑</span> Password
+                                    <span class="font-normal text-slate-500">— if required</span>
+                                </span>
+                                <input id="decrypt-password"
+                                    class="block w-full rounded-xl border border-white/10 bg-slate-900/60 px-4 py-3 text-slate-100 placeholder-slate-500 shadow-inner shadow-black/20 transition focus:border-indigo-400/60 focus:outline-none focus:ring-2 focus:ring-indigo-500/40"
+                                    type="password" placeholder="Enter the password to unlock" autocomplete="off"
+                                    data-1p-ignore />
+                            </label>
+                        </fieldset>
+
+                        <button type="submit" id="decrypt-btn"
+                            class="group inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-600 px-5 py-3 text-base font-semibold text-white shadow-lg shadow-indigo-900/40 transition hover:from-indigo-400 hover:to-violet-500 hover:shadow-indigo-800/50 focus:outline-none focus:ring-2 focus:ring-indigo-400/60 focus:ring-offset-2 focus:ring-offset-slate-950 active:scale-[.99] disabled:opacity-80">
+                            <span>Decrypt secret</span>
+                            <div role="status">
+                                <svg aria-hidden="true" class="h-4 w-4 animate-spin text-white/30 fill-white"
+                                    viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                                        fill="currentColor" />
+                                    <path
+                                        d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                                        fill="currentFill" />
+                                </svg>
+                                <span class="sr-only">Working…</span>
+                            </div>
+                        </button>
+                    </form>
+
+                    <aside id="decrypt-aside" class="mt-6 hidden border-t border-white/10 pt-6">
+                        <label class="block">
+                            <span class="mb-2 flex items-center gap-2 text-sm font-semibold text-slate-200">
+                                <span class="text-base">✨</span> Decrypted secret
+                            </span>
+                        </label>
+                        <textarea id="decrypt-secret"
+                            class="block w-full resize-none rounded-xl border border-emerald-400/20 bg-slate-900/60 px-4 py-3 text-slate-100 shadow-inner shadow-black/20 focus:border-emerald-400/50 focus:outline-none focus:ring-2 focus:ring-emerald-500/30"
+                            readonly rows="8" autocomplete="off" data-1p-ignore></textarea>
+                        <button id="decrypt-secret-btn" type="button"
+                            class="mt-2 inline-flex w-full items-center justify-center gap-1.5 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-semibold text-slate-100 transition hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-indigo-400/60">
+                            <span class="default-message inline-flex items-center gap-1.5">
+                                <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke-width="1.8" stroke="currentColor" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75" />
+                                </svg>
+                                Copy secret
+                            </span>
+                            <span class="success-message hidden inline-flex items-center gap-1.5 text-emerald-300">
+                                <svg class="h-4 w-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                    viewBox="0 0 16 12">
                                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
                                         stroke-width="2" d="M1 5.917 5.724 10.5 15 1.5" />
                                 </svg>
-                                Copied!
-                            </div>
-                        </span>
-                    </button>
+                                Copied
+                            </span>
+                        </button>
+                    </aside>
                 </div>
-            </aside>
-        </section>
+            </section>
 
-        <section id="decrypt" class="flex flex-col space-y-4 hidden">
-            <form id="decrypt-form" class="flex flex-col space-y-4">
-                <fieldset>
-                    <label class="block">
-                        <span class="block text-xl font-bold mb-2">Password 🔑</span>
-                        <input id="decrypt-password" class="block rounded w-full text-gray-700" type="password"
-                            placeholder="Optional password to decrypt secret" autocomplete="off" data-1p-ignore />
-                    </label>
-                </fieldset>
-
-                <div class="flex rounded-md space-x-2 items-center" role="group">
-                    <button type="submit" id="decrypt-btn"
-                        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg sm:w-auto py-2.5 px-4 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 items-center inline-flex justify-center text-lg font-bold">
-                        Decrypt
-                        <div role="status">
-                            <svg aria-hidden="true"
-                                class="ml-4 w-4 h-4 text-gray-200 animate-spin dark:text-gray-600 fill-blue-300"
-                                viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                    d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-                                    fill="currentColor" />
-                                <path
-                                    d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-                                    fill="currentFill" />
-                            </svg>
-                            <span class="sr-only">Loading...</span>
-                        </div>
-                    </button>
-                </div>
-            </form>
-
-            <aside id="decrypt-aside" class="hidden">
-                <label class="block">
-                    <span class="block text-sm font-medium">Secret</span>
-                </label>
-                <textarea id="decrypt-secret" class="block rounded w-full text-gray-700" readonly rows="10"
-                    autocomplete="off" data-1p-ignore></textarea>
-                <button id="decrypt-secret-btn" type="button"
-                    class="col-span-2 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-bl-lg rounded-br-lg text-sm w-full py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 items-center inline-flex justify-center text-lg font-bold">
-                    <span class="default-message text-lg font-bold">Copy 📋</span>
-                    <span class="success-message hidden text-lg font-bold">
-                        <div class="inline-flex items-center">
-                            <svg class="w-3 h-3 text-white me-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                                fill="none" viewBox="0 0 16 12">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                    stroke-width="2" d="M1 5.917 5.724 10.5 15 1.5" />
-                            </svg>
-                            Copied!
-                        </div>
-                    </span>
-                </button>
-            </aside>
-        </section>
-
+        </div>
     </main>
-    <footer class="bg-gray-900 h-1/12">
-        <div class="mx-auto w-full max-w-screen-xl p-4 py-6 lg:py-8">
-            <div class="flex items-center justify-center">
-                <span class="text-sm text-gray-500 sm:text-center dark:text-gray-400">© 2025 <a
-                        href="https://neal.codes/" class="hover:underline">neal.codes</a>
-                </span>
-                <div class="flex mt-4 sm:justify-center sm:mt-0">
-                    <a href="https://github.com/nealfennimore/secrets"
-                        class="text-gray-500 hover:text-gray-900 dark:hover:text-white ms-5">
-                        <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                            viewBox="0 0 20 20">
-                            <path fill-rule="evenodd"
-                                d="M10 .333A9.911 9.911 0 0 0 6.866 19.65c.5.092.678-.215.678-.477 0-.237-.01-1.017-.014-1.845-2.757.6-3.338-1.169-3.338-1.169a2.627 2.627 0 0 0-1.1-1.451c-.9-.615.07-.6.07-.6a2.084 2.084 0 0 1 1.518 1.021 2.11 2.11 0 0 0 2.884.823c.044-.503.268-.973.63-1.325-2.2-.25-4.516-1.1-4.516-4.9A3.832 3.832 0 0 1 4.7 7.068a3.56 3.56 0 0 1 .095-2.623s.832-.266 2.726 1.016a9.409 9.409 0 0 1 4.962 0c1.89-1.282 2.717-1.016 2.717-1.016.366.83.402 1.768.1 2.623a3.827 3.827 0 0 1 1.02 2.659c0 3.807-2.319 4.644-4.525 4.889a2.366 2.366 0 0 1 .673 1.834c0 1.326-.012 2.394-.012 2.72 0 .263.18.572.681.475A9.911 9.911 0 0 0 10 .333Z"
-                                clip-rule="evenodd" />
-                        </svg>
-                        <span class="sr-only">GitHub account</span>
-                    </a>
-                </div>
-            </div>
+
+    <footer class="w-full px-4 py-6">
+        <div class="mx-auto flex max-w-md items-center justify-center gap-4 text-slate-500">
+            <span class="text-xs">© 2026 <a href="https://neal.codes/"
+                    class="font-medium text-slate-400 transition hover:text-indigo-300 hover:underline">neal.codes</a></span>
+            <span class="text-slate-700">&middot;</span>
+            <a href="https://github.com/nealfennimore/secrets"
+                class="inline-flex items-center gap-1.5 text-xs transition hover:text-indigo-300">
+                <svg class="h-4 w-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                    viewBox="0 0 20 20">
+                    <path fill-rule="evenodd"
+                        d="M10 .333A9.911 9.911 0 0 0 6.866 19.65c.5.092.678-.215.678-.477 0-.237-.01-1.017-.014-1.845-2.757.6-3.338-1.169-3.338-1.169a2.627 2.627 0 0 0-1.1-1.451c-.9-.615.07-.6.07-.6a2.084 2.084 0 0 1 1.518 1.021 2.11 2.11 0 0 0 2.884.823c.044-.503.268-.973.63-1.325-2.2-.25-4.516-1.1-4.516-4.9A3.832 3.832 0 0 1 4.7 7.068a3.56 3.56 0 0 1 .095-2.623s.832-.266 2.726 1.016a9.409 9.409 0 0 1 4.962 0c1.89-1.282 2.717-1.016 2.717-1.016.366.83.402 1.768.1 2.623a3.827 3.827 0 0 1 1.02 2.659c0 3.807-2.319 4.644-4.525 4.889a2.366 2.366 0 0 1 .673 1.834c0 1.326-.012 2.394-.012 2.72 0 .263.18.572.681.475A9.911 9.911 0 0 0 10 .333Z"
+                        clip-rule="evenodd" />
+                </svg>
+                GitHub
+            </a>
         </div>
     </footer>
 
